@@ -1,5 +1,16 @@
 /vendor
+composer.lock
 .phpunit.result.cache
+.phpunit.cache/
 .env
+.env.*
 *.sqlite
+*.sqlite-*
+*.sqlite3
 .DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+testbench.yaml
+/storage
