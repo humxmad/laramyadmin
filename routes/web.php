@@ -4,9 +4,14 @@ use Illuminate\Support\Facades\Route;
 use LaraMyAdmin\Http\Controllers\ConnectionController;
 use LaraMyAdmin\Http\Controllers\DashboardController;
 use LaraMyAdmin\Http\Controllers\DataController;
+use LaraMyAdmin\Http\Controllers\DiffController;
 use LaraMyAdmin\Http\Controllers\ExportImportController;
+use LaraMyAdmin\Http\Controllers\GeneratorController;
+use LaraMyAdmin\Http\Controllers\MockDataController;
 use LaraMyAdmin\Http\Controllers\QueryController;
+use LaraMyAdmin\Http\Controllers\SavedQueryController;
 use LaraMyAdmin\Http\Controllers\SchemaController;
+use LaraMyAdmin\Http\Controllers\SearchController;
 use LaraMyAdmin\Http\Controllers\TableController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('laramyadmin.dashboard');
@@ -29,7 +34,7 @@ Route::prefix('api')->name('laramyadmin.api.')->group(function () {
     Route::post('tables/{table}/optimize', [TableController::class, 'optimize'])->name('tables.optimize');
     Route::post('tables/{table}/repair', [TableController::class, 'repair'])->name('tables.repair');
 
-    // Data CRUD
+    // Data CRUD & Inline Editing
     Route::get('tables/{table}/rows', [DataController::class, 'index'])->name('data.index');
     Route::post('tables/{table}/rows', [DataController::class, 'store'])->name('data.store');
     Route::put('tables/{table}/rows', [DataController::class, 'update'])->name('data.update');
@@ -46,6 +51,23 @@ Route::prefix('api')->name('laramyadmin.api.')->group(function () {
     Route::post('query/explain', [QueryController::class, 'explain'])->name('query.explain');
     Route::get('query/history', [QueryController::class, 'history'])->name('query.history');
     Route::delete('query/history', [QueryController::class, 'clearHistory'])->name('query.clear_history');
+
+    // Saved Queries (Bookmarks)
+    Route::get('saved-queries', [SavedQueryController::class, 'index'])->name('saved_queries.index');
+    Route::post('saved-queries', [SavedQueryController::class, 'store'])->name('saved_queries.store');
+    Route::delete('saved-queries/{id}', [SavedQueryController::class, 'destroy'])->name('saved_queries.destroy');
+
+    // Laravel Code Generators (Migration, Model, Factory)
+    Route::get('tables/{table}/generate', [GeneratorController::class, 'generate'])->name('generator.generate');
+
+    // Mock Data Generator
+    Route::post('tables/{table}/mock-data', [MockDataController::class, 'generate'])->name('mock_data.generate');
+
+    // Global Database Search
+    Route::post('search', [SearchController::class, 'search'])->name('search.global');
+
+    // Database Schema Diff
+    Route::post('diff', [DiffController::class, 'compare'])->name('diff.compare');
 
     // Import
     Route::post('import/sql', [ExportImportController::class, 'importSql'])->name('import.sql');

@@ -7,7 +7,12 @@ use Illuminate\Support\ServiceProvider;
 use LaraMyAdmin\Services\ConnectionManager;
 use LaraMyAdmin\Services\DataService;
 use LaraMyAdmin\Services\ExportImportService;
+use LaraMyAdmin\Services\GlobalSearchService;
+use LaraMyAdmin\Services\LaravelCodeGeneratorService;
+use LaraMyAdmin\Services\MockDataService;
 use LaraMyAdmin\Services\QueryService;
+use LaraMyAdmin\Services\SavedQueryService;
+use LaraMyAdmin\Services\SchemaDiffService;
 use LaraMyAdmin\Services\SchemaService;
 
 class LaraMyAdminServiceProvider extends ServiceProvider
@@ -23,6 +28,12 @@ class LaraMyAdminServiceProvider extends ServiceProvider
         $this->app->singleton(DataService::class);
         $this->app->singleton(QueryService::class);
         $this->app->singleton(ExportImportService::class);
+        $this->app->singleton(LaravelCodeGeneratorService::class);
+        $this->app->singleton(GlobalSearchService::class);
+        $this->app->singleton(MockDataService::class);
+        $this->app->singleton(SchemaDiffService::class);
+        $this->app->singleton(SavedQueryService::class);
+
         $this->app->singleton('laramyadmin', function () {
             return new LaraMyAdmin();
         });

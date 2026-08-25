@@ -6,13 +6,13 @@
     <header class="h-14 border-b border-slate-800/90 bg-slate-900/90 backdrop-blur-md px-4 flex items-center justify-between shrink-0 z-20 shadow-sm">
         <div class="flex items-center space-x-4">
             <!-- Brand Logo -->
-            <div class="flex items-center space-x-2.5 select-none">
+            <div class="flex items-center space-x-2.5 select-none cursor-pointer" @click="setMainTab('tables')">
                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-400 via-emerald-500 to-teal-700 flex items-center justify-center shadow-lg shadow-teal-500/20 ring-1 ring-white/20">
                     <i data-lucide="database" class="w-4 h-4 text-slate-950 stroke-[2.5]"></i>
                 </div>
                 <div class="flex items-center">
                     <span class="font-bold text-base tracking-tight bg-gradient-to-r from-teal-200 via-emerald-200 to-cyan-300 bg-clip-text text-transparent">LaraMyAdmin</span>
-                    <span class="text-[10px] uppercase font-mono tracking-wider ml-2 px-1.5 py-0.5 rounded-full bg-teal-950 border border-teal-700/60 text-teal-300 font-semibold shadow-inner">Studio</span>
+                    <span class="text-[10px] uppercase font-mono tracking-wider ml-2 px-1.5 py-0.5 rounded-full bg-teal-950 border border-teal-700/60 text-teal-300 font-semibold shadow-inner">Studio Pro</span>
                 </div>
             </div>
 
@@ -25,19 +25,19 @@
                     </div>
                     <select v-model="selectedConnection" @change="switchConnection" class="bg-slate-900 border border-slate-700 rounded-md text-xs px-2.5 py-1 text-slate-200 focus:outline-none focus:border-teal-500 cursor-pointer font-mono font-medium">
                         <option v-for="conn in connections" :key="conn.name" :value="conn.name">
-                            @{{ conn.name }} (@{{ conn.driver }}) @{{ conn.is_default ? '★ default' : '' }} @{{ conn.is_dynamic ? '⚡ dynamic' : '' }}
+                            @{{ conn.name }} (@{{ conn.driver }}) @{{ conn.is_default ? '★' : '' }} @{{ conn.is_dynamic ? '⚡' : '' }}
                         </option>
                     </select>
-                    <button @click="showAddConnectionModal = true" class="p-1.5 hover:bg-slate-700 rounded-md text-slate-300 hover:text-teal-300 transition" title="Add Database Connection">
+                    <button @click="showAddConnectionModal = true" class="p-1.5 hover:bg-slate-700 rounded-md text-slate-300 hover:text-teal-300 transition" title="Add Connection">
                         <i data-lucide="plus" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Global Navigation & Action Buttons -->
+        <!-- Global Navigation Tabs & Actions -->
         <div class="flex items-center space-x-2">
-            <!-- Mode Badges -->
+            <!-- Read Only Badge -->
             <span v-if="config.readOnly" class="text-xs px-2.5 py-1 rounded-md bg-amber-950/80 border border-amber-700/60 text-amber-300 font-medium flex items-center space-x-1 shadow-sm">
                 <i data-lucide="lock" class="w-3 h-3"></i>
                 <span>Read-Only</span>
@@ -45,40 +45,52 @@
 
             <!-- Top Nav Tabs -->
             <div class="flex items-center bg-slate-800/70 border border-slate-800 rounded-lg p-0.5 shadow-inner">
-                <button @click="setMainTab('tables')" :class="activeMainTab === 'tables' ? 'bg-teal-600 text-white font-semibold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-3 py-1.5 text-xs rounded-md transition flex items-center space-x-1.5">
+                <button @click="setMainTab('tables')" :class="activeMainTab === 'tables' ? 'bg-teal-600 text-white font-semibold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-2.5 py-1.5 text-xs rounded-md transition flex items-center space-x-1.5">
                     <i data-lucide="table-2" class="w-3.5 h-3.5"></i>
                     <span>Tables</span>
                 </button>
-                <button @click="setMainTab('query')" :class="activeMainTab === 'query' ? 'bg-teal-600 text-white font-semibold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-3 py-1.5 text-xs rounded-md transition flex items-center space-x-1.5">
+                <button @click="setMainTab('query')" :class="activeMainTab === 'query' ? 'bg-teal-600 text-white font-semibold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-2.5 py-1.5 text-xs rounded-md transition flex items-center space-x-1.5">
                     <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
                     <span>SQL Console</span>
                 </button>
-                <button @click="setMainTab('info')" :class="activeMainTab === 'info' ? 'bg-teal-600 text-white font-semibold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-3 py-1.5 text-xs rounded-md transition flex items-center space-x-1.5">
+                <button @click="setMainTab('erd')" :class="activeMainTab === 'erd' ? 'bg-teal-600 text-white font-semibold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-2.5 py-1.5 text-xs rounded-md transition flex items-center space-x-1.5">
+                    <i data-lucide="network" class="w-3.5 h-3.5"></i>
+                    <span>ER Diagram</span>
+                </button>
+                <button @click="setMainTab('search')" :class="activeMainTab === 'search' ? 'bg-teal-600 text-white font-semibold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-2.5 py-1.5 text-xs rounded-md transition flex items-center space-x-1.5">
+                    <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                    <span>Global Search</span>
+                </button>
+                <button @click="setMainTab('diff')" :class="activeMainTab === 'diff' ? 'bg-teal-600 text-white font-semibold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-2.5 py-1.5 text-xs rounded-md transition flex items-center space-x-1.5">
+                    <i data-lucide="git-compare" class="w-3.5 h-3.5"></i>
+                    <span>Schema Diff</span>
+                </button>
+                <button @click="setMainTab('info')" :class="activeMainTab === 'info' ? 'bg-teal-600 text-white font-semibold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-2.5 py-1.5 text-xs rounded-md transition flex items-center space-x-1.5">
                     <i data-lucide="server" class="w-3.5 h-3.5"></i>
-                    <span>Database Info</span>
+                    <span>DB Info</span>
                 </button>
             </div>
 
-            <!-- Import / Export Actions -->
-            <button @click="showImportModal = true" class="px-3 py-1.5 text-xs rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm">
+            <!-- Import / Dump SQL -->
+            <button @click="showImportModal = true" class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm">
                 <i data-lucide="upload" class="w-3.5 h-3.5 text-teal-400"></i>
                 <span>Import</span>
             </button>
-            <a :href="'/' + config.path + '/export/sql'" target="_blank" class="px-3 py-1.5 text-xs rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm">
+            <a :href="'/' + config.path + '/export/sql'" target="_blank" class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm">
                 <i data-lucide="download" class="w-3.5 h-3.5 text-teal-400"></i>
                 <span>Dump SQL</span>
             </a>
 
-            <!-- Refresh Button -->
+            <!-- Refresh -->
             <button @click="refreshAll" class="p-2 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 transition" title="Refresh All Data">
                 <i data-lucide="refresh-cw" class="w-3.5 h-3.5" :class="isLoading ? 'animate-spin text-teal-400' : ''"></i>
             </button>
         </div>
     </header>
 
-    <!-- Main Workspace (Sidebar + Canvas) -->
+    <!-- Main Workspace -->
     <div class="flex flex-1 overflow-hidden">
-        <!-- Sidebar -->
+        <!-- Sidebar (Tables list) -->
         <aside class="w-64 border-r border-slate-800/90 bg-slate-900/60 flex flex-col shrink-0 select-none">
             <!-- Sidebar Header & Search -->
             <div class="p-3 border-b border-slate-800/80 space-y-2.5">
@@ -101,8 +113,8 @@
                     No matching tables found.
                 </div>
                 <div v-for="t in filteredTables" :key="t.name" 
-                     @click="selectTable(t.name)"
-                     :class="selectedTableName === t.name ? 'bg-teal-950/90 border-teal-700/80 text-teal-300 shadow' : 'border-transparent text-slate-300 hover:bg-slate-800/60'"
+                     @click="setMainTab('tables'); selectTable(t.name);"
+                     :class="selectedTableName === t.name && activeMainTab === 'tables' ? 'bg-teal-950/90 border-teal-700/80 text-teal-300 shadow' : 'border-transparent text-slate-300 hover:bg-slate-800/60'"
                      class="group flex items-center justify-between px-2.5 py-1.5 rounded-md border text-xs cursor-pointer transition">
                     <div class="flex items-center space-x-2 truncate">
                         <i :data-lucide="t.type === 'view' ? 'eye' : 'table'" class="w-3.5 h-3.5 shrink-0" :class="selectedTableName === t.name ? 'text-teal-400' : 'text-slate-500 group-hover:text-slate-300'"></i>
@@ -133,7 +145,7 @@
 
         <!-- Main Canvas -->
         <main class="flex-1 flex flex-col overflow-hidden bg-slate-950">
-            <!-- VIEW 1: TABLE MANAGER (BROWSE / STRUCTURE) -->
+            <!-- TAB 1: TABLE MANAGER (BROWSE / STRUCTURE) -->
             <div v-if="activeMainTab === 'tables'" class="flex-1 flex flex-col overflow-hidden">
                 <div v-if="!selectedTableName" class="flex-1 flex flex-col items-center justify-center text-slate-500 p-8 space-y-3">
                     <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-600 shadow-inner">
@@ -162,12 +174,27 @@
                             </div>
                         </div>
 
-                        <!-- Table Actions -->
+                        <!-- Table Actions Toolbar -->
                         <div class="flex items-center space-x-2">
+                            <!-- Insert Row -->
                             <button v-if="activeTableTab === 'browse'" @click="openInsertModal" class="px-2.5 py-1 text-xs rounded-md bg-teal-600 hover:bg-teal-500 text-white font-semibold transition flex items-center space-x-1 shadow-sm">
                                 <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                                <span>Insert Row</span>
+                                <span>Insert</span>
                             </button>
+
+                            <!-- Mock Data Button -->
+                            <button @click="showMockDataModal = true" class="px-2.5 py-1 text-xs rounded-md border border-purple-800 bg-purple-950/60 hover:bg-purple-900/80 text-purple-300 font-semibold transition flex items-center space-x-1 shadow-sm">
+                                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-purple-400"></i>
+                                <span>Mock Data</span>
+                            </button>
+
+                            <!-- Laravel Code Generator -->
+                            <button @click="openCodeGeneratorModal" class="px-2.5 py-1 text-xs rounded-md border border-rose-800 bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 font-semibold transition flex items-center space-x-1 shadow-sm">
+                                <i data-lucide="code-2" class="w-3.5 h-3.5 text-rose-400"></i>
+                                <span>Laravel Export</span>
+                            </button>
+
+                            <!-- Bulk Delete -->
                             <button v-if="activeTableTab === 'browse' && selectedRowKeys.length > 0" @click="deleteSelectedRows" class="px-2.5 py-1 text-xs rounded-md bg-rose-600 hover:bg-rose-500 text-white font-semibold transition flex items-center space-x-1 shadow">
                                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                 <span>Delete (@{{ selectedRowKeys.length }})</span>
@@ -220,7 +247,6 @@
                                     <option :value="50">50</option>
                                     <option :value="100">100</option>
                                     <option :value="250">250</option>
-                                    <option :value="500">500</option>
                                 </select>
                                 <span class="mx-1">|</span>
                                 <span>Page @{{ currentPage }} of @{{ lastPage }}</span>
@@ -235,7 +261,7 @@
                             </div>
                         </div>
 
-                        <!-- Data Grid Table -->
+                        <!-- Data Grid Table with Inline Cell Editing -->
                         <div class="flex-1 overflow-auto custom-scrollbar">
                             <table class="w-full text-left text-xs border-collapse font-mono">
                                 <thead class="bg-slate-900/95 text-slate-400 sticky top-0 z-10 border-b border-slate-800 shadow-sm backdrop-blur">
@@ -256,18 +282,18 @@
                                 <tbody class="divide-y divide-slate-800/60 bg-slate-950">
                                     <tr v-if="tableRows.length === 0">
                                         <td :colspan="tableColumns.length + 2" class="text-center py-16 text-slate-500">
-                                            No rows found in this table. Click <strong>Insert Row</strong> to add one.
+                                            No rows found in this table. Click <strong>Insert</strong> or <strong>Mock Data</strong> to generate records.
                                         </td>
                                     </tr>
-                                    <tr v-for="(row, rIndex) in tableRows" :key="rIndex" @dblclick="openEditModal(row)" class="hover:bg-slate-900/70 transition group cursor-default">
+                                    <tr v-for="(row, rIndex) in tableRows" :key="rIndex" class="hover:bg-slate-900/70 transition group">
                                         <!-- Checkbox -->
-                                        <td class="p-2.5 text-center" @click.stop>
+                                        <td class="p-2.5 text-center">
                                             <input type="checkbox" :value="getRowKey(row)" v-model="selectedRowKeys" class="rounded bg-slate-800 border-slate-700 text-teal-600 focus:ring-0 cursor-pointer">
                                         </td>
                                         <!-- Actions -->
-                                        <td class="p-2.5 text-center" @click.stop>
+                                        <td class="p-2.5 text-center">
                                             <div class="flex items-center justify-center space-x-1 opacity-70 group-hover:opacity-100 transition">
-                                                <button @click="openEditModal(row)" class="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-teal-300 transition" title="Edit Record">
+                                                <button @click="openEditModal(row)" class="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-teal-300 transition" title="Edit Record Modal">
                                                     <i data-lucide="pencil" class="w-3 h-3"></i>
                                                 </button>
                                                 <button @click="duplicateRecord(row)" class="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-cyan-300 transition" title="Clone Record">
@@ -278,9 +304,24 @@
                                                 </button>
                                             </div>
                                         </td>
-                                        <!-- Cells -->
-                                        <td v-for="col in tableColumns" :key="col.name" class="p-2.5 text-slate-300 max-w-xs truncate border-r border-slate-900/80" :title="formatCellValue(row[col.name])">
-                                            <span v-if="row[col.name] === null" class="text-slate-600 italic">NULL</span>
+                                        <!-- Cells (with Spreadsheet Inline Editing on Double-Click) -->
+                                        <td v-for="col in tableColumns" :key="col.name" 
+                                            @dblclick="startInlineEdit(rIndex, col.name, row[col.name])"
+                                            class="p-2.5 text-slate-300 max-w-xs truncate border-r border-slate-900/80 cursor-pointer hover:bg-teal-950/30 transition relative" 
+                                            :title="'Double-click to edit. ' + formatCellValue(row[col.name])">
+                                            
+                                            <!-- Inline Edit Mode -->
+                                            <div v-if="inlineEditing.rowIndex === rIndex && inlineEditing.colName === col.name" class="absolute inset-0 p-1 bg-slate-900 z-20 flex items-center">
+                                                <input v-model="inlineEditing.value" 
+                                                       @keyup.enter="saveInlineEdit(row)" 
+                                                       @keyup.esc="cancelInlineEdit"
+                                                       ref="inlineInput"
+                                                       type="text" 
+                                                       class="w-full h-full bg-slate-950 border border-teal-500 rounded px-2 text-xs text-teal-300 font-mono focus:outline-none shadow-lg">
+                                            </div>
+
+                                            <!-- Display Mode -->
+                                            <span v-else-if="row[col.name] === null" class="text-slate-600 italic">NULL</span>
                                             <span v-else-if="typeof row[col.name] === 'boolean'" class="px-1.5 py-0.5 rounded text-[10px] font-semibold" :class="row[col.name] ? 'bg-emerald-950 text-emerald-400' : 'bg-rose-950 text-rose-400'">
                                                 @{{ row[col.name] ? 'TRUE' : 'FALSE' }}
                                             </span>
@@ -416,7 +457,7 @@
                 </div>
             </div>
 
-            <!-- VIEW 2: SQL CONSOLE -->
+            <!-- TAB 2: SQL CONSOLE (With Bookmarks & Saved Queries) -->
             <div v-if="activeMainTab === 'query'" class="flex-1 flex flex-col overflow-hidden p-4 space-y-3">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-2">
@@ -425,10 +466,16 @@
                         <span class="text-xs text-slate-500 font-mono">(@{{ activeConnection }})</span>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <!-- Quick Query Snippets -->
-                        <button @click="setSqlSnippet('select')" class="px-2 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-mono">SELECT</button>
-                        <button @click="setSqlSnippet('count')" class="px-2 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-mono">COUNT</button>
+                        <!-- Saved Queries / Bookmarks Dropdown -->
+                        <button @click="showSavedQueriesModal = true" class="px-3 py-1.5 text-xs rounded-md border border-amber-700/80 bg-amber-950/60 hover:bg-amber-900/80 text-amber-300 font-semibold flex items-center space-x-1 shadow-sm">
+                            <i data-lucide="bookmark" class="w-3.5 h-3.5"></i>
+                            <span>Saved Queries (@{{ savedQueries.length }})</span>
+                        </button>
+                        <button @click="promptSaveQuery" class="px-2.5 py-1.5 text-xs rounded-md border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium" title="Save this query as a favorite bookmark">
+                            <i data-lucide="plus" class="w-3.5 h-3.5 inline mr-1"></i>Save Query
+                        </button>
                         
+                        <!-- Execute -->
                         <button @click="runQuery" class="px-3.5 py-1.5 text-xs rounded-md bg-teal-600 hover:bg-teal-500 text-white font-semibold transition flex items-center space-x-1.5 shadow-md">
                             <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
                             <span>Execute (Ctrl + Enter)</span>
@@ -493,7 +540,188 @@
                 </div>
             </div>
 
-            <!-- VIEW 3: DATABASE INFO & METRICS -->
+            <!-- TAB 3: VISUAL ER DIAGRAM -->
+            <div v-if="activeMainTab === 'erd'" class="flex-1 flex flex-col overflow-hidden p-6 space-y-4">
+                <div class="flex items-center justify-between shrink-0">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                            <i data-lucide="network" class="w-5 h-5 text-teal-400"></i>
+                            <span>Visual Database Schema & Relationships (ER Diagram)</span>
+                        </h3>
+                        <p class="text-xs text-slate-400">Interactive visual map of tables, columns, primary keys, and relationships in <span class="text-teal-300 font-mono">@{{ activeConnection }}</span>.</p>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-auto custom-scrollbar p-6 bg-slate-900/40 border border-slate-800 rounded-2xl">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div v-for="tbl in tables" :key="tbl.name" class="rounded-xl border border-slate-800 bg-slate-900/90 shadow-xl overflow-hidden hover:border-teal-700/80 transition flex flex-col">
+                            <!-- Table Title Header -->
+                            <div class="p-3 bg-gradient-to-r from-slate-900 to-slate-800/90 border-b border-slate-800 flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <i data-lucide="table" class="w-4 h-4 text-teal-400"></i>
+                                    <span class="font-mono text-xs font-bold text-slate-100">@{{ tbl.name }}</span>
+                                </div>
+                                <button @click="setMainTab('tables'); selectTable(tbl.name);" class="text-[10px] px-2 py-0.5 rounded bg-teal-950 border border-teal-800 text-teal-300 hover:bg-teal-900 transition">Browse</button>
+                            </div>
+                            <!-- Rows summary -->
+                            <div class="p-3 text-xs text-slate-400 space-y-1 font-mono">
+                                <div class="flex justify-between">
+                                    <span>Engine:</span>
+                                    <span class="text-slate-300">@{{ tbl.engine }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Rows:</span>
+                                    <span class="text-teal-300 font-semibold">@{{ formatNumber(tbl.rows_count) }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Data Size:</span>
+                                    <span class="text-emerald-400">@{{ tbl.data_size || tbl.size }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: GLOBAL DATABASE SEARCH -->
+            <div v-if="activeMainTab === 'search'" class="flex-1 flex flex-col overflow-hidden p-6 space-y-4">
+                <div>
+                    <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                        <i data-lucide="search" class="w-5 h-5 text-teal-400"></i>
+                        <span>Global Database Search</span>
+                    </h3>
+                    <p class="text-xs text-slate-400">Search for any text, number, email, or keyword across ALL tables in the active database at once.</p>
+                </div>
+
+                <div class="flex items-center space-x-3 shrink-0">
+                    <div class="relative flex-1">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-500"></i>
+                        <input v-model="globalSearchKeyword" @keyup.enter="runGlobalSearch" type="text" placeholder="Type a keyword to search everywhere (e.g. email, UUID, transaction ID)..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-100 font-mono focus:outline-none focus:border-teal-500 shadow-inner">
+                    </div>
+                    <button @click="runGlobalSearch" :disabled="searchingGlobal" class="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs shadow flex items-center space-x-1.5">
+                        <span v-if="searchingGlobal" class="animate-spin">⟳</span>
+                        <span>Search Database</span>
+                    </button>
+                </div>
+
+                <!-- Global Search Results -->
+                <div class="flex-1 overflow-y-auto custom-scrollbar space-y-4">
+                    <div v-if="!globalSearchResults" class="text-center py-24 text-slate-500 text-xs">
+                        Enter a search keyword above to scan across all tables in @{{ activeConnection }}.
+                    </div>
+                    <div v-else-if="globalSearchResults.results.length === 0" class="text-center py-16 text-slate-400 text-xs">
+                        No matches found across any tables for "<strong class="text-teal-400">@{{ globalSearchResults.keyword }}</strong>".
+                    </div>
+                    <div v-else class="space-y-4">
+                        <div class="text-xs text-slate-400 font-mono">
+                            Found <strong class="text-emerald-400">@{{ globalSearchResults.total_matches }}</strong> matches in <strong class="text-teal-400">@{{ globalSearchResults.tables_matched_count }}</strong> table(s):
+                        </div>
+
+                        <div v-for="res in globalSearchResults.results" :key="res.table" class="rounded-xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow">
+                            <div class="p-3 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <i data-lucide="table" class="w-4 h-4 text-teal-400"></i>
+                                    <span class="font-mono text-xs font-bold text-slate-200">@{{ res.table }}</span>
+                                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-teal-950 border border-teal-800 text-teal-300 font-semibold">@{{ res.matches_count }} matches</span>
+                                </div>
+                                <button @click="setMainTab('tables'); selectTable(res.table);" class="text-xs text-teal-400 hover:underline">Open Table</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-xs font-mono border-collapse">
+                                    <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                                        <tr>
+                                            <th v-for="col in res.columns" :key="col" class="p-2.5 text-slate-400">@{{ col }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-800/60 bg-slate-950">
+                                        <tr v-for="(row, idx) in res.rows" :key="idx" class="hover:bg-slate-900/50">
+                                            <td v-for="col in res.columns" :key="col" class="p-2.5 text-slate-300 max-w-xs truncate border-r border-slate-900/80">
+                                                @{{ row[col] !== null ? formatCellValue(row[col]) : 'NULL' }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: SCHEMA DIFF & DATABASE COMPARISON -->
+            <div v-if="activeMainTab === 'diff'" class="flex-1 flex flex-col overflow-hidden p-6 space-y-4">
+                <div>
+                    <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                        <i data-lucide="git-compare" class="w-5 h-5 text-teal-400"></i>
+                        <span>Schema Diff & Database Comparison</span>
+                    </h3>
+                    <p class="text-xs text-slate-400">Compare table schemas and column definitions between two connected databases.</p>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-800 bg-slate-900/60 flex items-center space-x-4 shrink-0">
+                    <div class="flex-1">
+                        <label class="block text-slate-400 mb-1 text-xs">Source Connection</label>
+                        <select v-model="diffSource" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 font-mono">
+                            <option v-for="c in connections" :key="c.name" :value="c.name">@{{ c.name }} (@{{ c.driver }})</option>
+                        </select>
+                    </div>
+                    <div class="text-slate-500 font-bold text-sm pt-4">⇄</div>
+                    <div class="flex-1">
+                        <label class="block text-slate-400 mb-1 text-xs">Target Connection</label>
+                        <select v-model="diffTarget" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 font-mono">
+                            <option v-for="c in connections" :key="c.name" :value="c.name">@{{ c.name }} (@{{ c.driver }})</option>
+                        </select>
+                    </div>
+                    <div class="pt-4">
+                        <button @click="runSchemaDiff" :disabled="runningDiff" class="px-5 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs shadow flex items-center space-x-1.5">
+                            <span v-if="runningDiff" class="animate-spin">⟳</span>
+                            <span>Compare Schemas</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Diff Results -->
+                <div class="flex-1 overflow-y-auto custom-scrollbar space-y-4">
+                    <div v-if="!diffResults" class="text-center py-24 text-slate-500 text-xs">
+                        Select two connections above and click <strong>Compare Schemas</strong> to inspect differences.
+                    </div>
+                    <div v-else-if="!diffResults.has_differences" class="p-8 text-center bg-emerald-950/40 border border-emerald-800 rounded-xl text-emerald-300 text-xs">
+                        ✓ Both databases are identical in structure! No schema differences found.
+                    </div>
+                    <div v-else class="space-y-4">
+                        <!-- Missing Tables in Target -->
+                        <div v-if="diffResults.missing_tables_in_target.length > 0" class="p-4 rounded-xl bg-rose-950/30 border border-rose-800 space-y-2">
+                            <h4 class="text-xs font-bold text-rose-300">Tables missing in @{{ diffResults.target_connection }}:</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span v-for="tbl in diffResults.missing_tables_in_target" :key="tbl" class="px-2.5 py-1 rounded bg-rose-900/60 text-rose-200 font-mono text-xs border border-rose-700">@{{ tbl }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Missing Tables in Source -->
+                        <div v-if="diffResults.missing_tables_in_source.length > 0" class="p-4 rounded-xl bg-cyan-950/30 border border-cyan-800 space-y-2">
+                            <h4 class="text-xs font-bold text-cyan-300">Tables present only in @{{ diffResults.target_connection }}:</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span v-for="tbl in diffResults.missing_tables_in_source" :key="tbl" class="px-2.5 py-1 rounded bg-cyan-900/60 text-cyan-200 font-mono text-xs border border-cyan-700">@{{ tbl }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Column differences in common tables -->
+                        <div v-for="td in diffResults.table_differences" :key="td.table" class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+                            <h4 class="text-xs font-bold text-teal-300 font-mono">Table: @{{ td.table }}</h4>
+                            <div v-if="td.missing_columns_in_target.length > 0" class="text-xs text-rose-400">
+                                Missing columns in target: <strong>@{{ td.missing_columns_in_target.join(', ') }}</strong>
+                            </div>
+                            <div v-if="td.type_mismatches.length > 0" class="space-y-1">
+                                <div v-for="tm in td.type_mismatches" :key="tm.column" class="text-xs font-mono text-slate-300 bg-slate-950 p-2 rounded border border-slate-800 flex justify-between">
+                                    <span class="text-amber-400 font-bold">@{{ tm.column }}</span>
+                                    <span class="text-slate-400">Source: <span class="text-emerald-400">@{{ tm.source }}</span> | Target: <span class="text-rose-400">@{{ tm.target }}</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: DATABASE INFO & METRICS -->
             <div v-if="activeMainTab === 'info'" class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
                 <div>
                     <h3 class="text-base font-bold text-slate-100">Database Server Information</h3>
@@ -615,7 +843,108 @@
         </div>
     </div>
 
-    <!-- MODAL 2: INSERT / EDIT ROW -->
+    <!-- MODAL 2: LARAVEL CODE GENERATOR (Migration / Model / Factory) -->
+    <div v-if="showCodeGeneratorModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-3xl w-full p-6 space-y-4 shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 shrink-0">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="code-2" class="w-4 h-4 text-rose-400"></i>
+                    <h3 class="font-bold text-sm text-slate-100">Export @{{ selectedTableName }} as Laravel Code</h3>
+                </div>
+                <button @click="showCodeGeneratorModal = false" class="text-slate-400 hover:text-white">&times;</button>
+            </div>
+
+            <!-- Generator Tabs -->
+            <div class="flex items-center bg-slate-800/80 border border-slate-700/80 rounded-lg p-0.5 text-xs shrink-0">
+                <button @click="activeGenTab = 'migration'" :class="activeGenTab === 'migration' ? 'bg-rose-600 text-white font-semibold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-3 py-1.5 rounded transition">
+                    Laravel Migration
+                </button>
+                <button @click="activeGenTab = 'model'" :class="activeGenTab === 'model' ? 'bg-rose-600 text-white font-semibold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-3 py-1.5 rounded transition">
+                    Eloquent Model
+                </button>
+                <button @click="activeGenTab = 'factory'" :class="activeGenTab === 'factory' ? 'bg-rose-600 text-white font-semibold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-3 py-1.5 rounded transition">
+                    Model Factory
+                </button>
+            </div>
+
+            <!-- Code Output Display -->
+            <div class="flex-1 overflow-auto custom-scrollbar rounded-xl bg-slate-950 border border-slate-800 p-4 relative">
+                <button @click="copyToClipboard(generatedCodes[activeGenTab] || '')" class="absolute top-3 right-3 px-2.5 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 flex items-center space-x-1 shadow">
+                    <i data-lucide="copy" class="w-3 h-3"></i>
+                    <span>Copy</span>
+                </button>
+                <pre class="font-mono text-xs text-rose-300 whitespace-pre-wrap">@{{ generatedCodes[activeGenTab] || 'Generating code...' }}</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: MOCK DATA GENERATOR -->
+    <div v-if="showMockDataModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i>
+                    <h3 class="font-bold text-sm text-slate-100">Generate Mock Data for @{{ selectedTableName }}</h3>
+                </div>
+                <button @click="showMockDataModal = false" class="text-slate-400 hover:text-white">&times;</button>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <p class="text-slate-400">Instantly generate and insert realistic test records with fake names, emails, addresses, numbers, and dates matching column types.</p>
+                <div>
+                    <label class="block text-slate-300 font-medium mb-1">Number of Records</label>
+                    <select v-model="mockCount" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 font-mono">
+                        <option :value="5">5 Records</option>
+                        <option :value="10">10 Records</option>
+                        <option :value="25">25 Records</option>
+                        <option :value="50">50 Records</option>
+                        <option :value="100">100 Records</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end space-x-2 border-t border-slate-800 pt-4">
+                <button @click="showMockDataModal = false" class="px-3 py-1.5 text-xs rounded-lg text-slate-400 hover:text-white">Cancel</button>
+                <button @click="submitMockData" :disabled="generatingMock" class="px-4 py-1.5 text-xs rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-semibold shadow flex items-center space-x-1.5">
+                    <span v-if="generatingMock" class="animate-spin">⟳</span>
+                    <span>Generate & Insert</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: SAVED QUERIES (BOOKMARKS) -->
+    <div v-if="showSavedQueriesModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 space-y-4 shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="bookmark" class="w-4 h-4 text-amber-400"></i>
+                    <h3 class="font-bold text-sm text-slate-100">Saved SQL Queries (Bookmarks)</h3>
+                </div>
+                <button @click="showSavedQueriesModal = false" class="text-slate-400 hover:text-white">&times;</button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scrollbar space-y-2.5 pr-1 text-xs">
+                <div v-if="savedQueries.length === 0" class="text-center py-12 text-slate-500">
+                    No saved queries yet. Click <strong>Save Query</strong> in the SQL Console to bookmark queries.
+                </div>
+                <div v-for="sq in savedQueries" :key="sq.id" class="p-3 rounded-xl border border-slate-800 bg-slate-800/40 hover:border-amber-700/80 transition space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-slate-100">@{{ sq.title }}</span>
+                        <div class="flex items-center space-x-2">
+                            <button @click="loadSavedQuery(sq)" class="px-2.5 py-1 rounded bg-teal-900/60 hover:bg-teal-800 border border-teal-700/60 text-teal-300 font-semibold text-[11px]">Load Query</button>
+                            <button @click="deleteSavedQuery(sq.id)" class="p-1 hover:bg-slate-800 rounded text-slate-500 hover:text-rose-400" title="Delete Bookmark">
+                                <i data-lucide="trash" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <pre class="p-2.5 rounded-lg bg-slate-950 text-amber-300 font-mono text-[11px] overflow-x-auto whitespace-pre-wrap">@{{ sq.sql }}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: INSERT / EDIT ROW -->
     <div v-if="showRowModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 space-y-4 shadow-2xl flex flex-col max-h-[90vh]">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3 shrink-0">
@@ -650,7 +979,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: CREATE TABLE -->
+    <!-- MODAL 6: CREATE TABLE -->
     <div v-if="showCreateTableModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-3xl w-full p-6 space-y-4 shadow-2xl flex flex-col max-h-[90vh]">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3 shrink-0">
@@ -702,7 +1031,7 @@
         </div>
     </div>
 
-    <!-- MODAL 4: IMPORT SQL -->
+    <!-- MODAL 7: IMPORT SQL -->
     <div v-if="showImportModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -728,7 +1057,7 @@
         </div>
     </div>
 
-    <!-- MODAL 5: ADD COLUMN -->
+    <!-- MODAL 8: ADD COLUMN -->
     <div v-if="showAddColumnModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -792,7 +1121,7 @@
             const systemInfo = ref(@json($systemInfo));
             const tables = ref(@json($tables));
 
-            const activeMainTab = ref('tables'); // 'tables', 'query', 'info'
+            const activeMainTab = ref('tables'); // 'tables', 'query', 'erd', 'search', 'diff', 'info'
             const activeTableTab = ref('browse'); // 'browse', 'structure'
             const selectedTableName = ref(tables.value.length > 0 ? tables.value[0].name : '');
             const tableSearch = ref('');
@@ -814,6 +1143,9 @@
             const selectedRowKeys = ref([]);
             const showExportDropdown = ref(false);
 
+            // Spreadsheet Inline Editing State
+            const inlineEditing = ref({ rowIndex: null, colName: null, value: '' });
+
             // Table Structure State
             const tableIndexes = ref([]);
             const tableForeignKeys = ref([]);
@@ -823,6 +1155,31 @@
             const sqlQuery = ref('SELECT * FROM ' + (selectedTableName.value ? '`' + selectedTableName.value + '`' : 'users') + ' LIMIT 50;');
             const queryResult = ref(null);
             let codeEditorInstance = null;
+
+            // Saved Queries
+            const savedQueries = ref([]);
+            const showSavedQueriesModal = ref(false);
+
+            // Laravel Code Generator
+            const showCodeGeneratorModal = ref(false);
+            const activeGenTab = ref('migration'); // 'migration', 'model', 'factory'
+            const generatedCodes = ref({});
+
+            // Mock Data
+            const showMockDataModal = ref(false);
+            const mockCount = ref(10);
+            const generatingMock = ref(false);
+
+            // Global Search
+            const globalSearchKeyword = ref('');
+            const globalSearchResults = ref(null);
+            const searchingGlobal = ref(false);
+
+            // Schema Diff
+            const diffSource = ref(connections.value[0] ? connections.value[0].name : '');
+            const diffTarget = ref(connections.value[1] ? connections.value[1].name : (connections.value[0] ? connections.value[0].name : ''));
+            const diffResults = ref(null);
+            const runningDiff = ref(false);
 
             // Modals
             const showAddConnectionModal = ref(false);
@@ -1080,6 +1437,48 @@
                 }
             };
 
+            // Spreadsheet Inline Editing
+            const startInlineEdit = (rIdx, colName, currentVal) => {
+                inlineEditing.value = {
+                    rowIndex: rIdx,
+                    colName: colName,
+                    value: currentVal !== null ? String(currentVal) : ''
+                };
+                nextTick(() => {
+                    const inputs = document.querySelectorAll('input[ref="inlineInput"]');
+                    if (inputs.length > 0) inputs[0].focus();
+                });
+            };
+
+            const cancelInlineEdit = () => {
+                inlineEditing.value = { rowIndex: null, colName: null, value: '' };
+            };
+
+            const saveInlineEdit = async (row) => {
+                const colName = inlineEditing.value.colName;
+                const newVal = inlineEditing.value.value;
+                const where = getRowWhere(row);
+
+                try {
+                    const res = await fetch(`/${config.value.path}/api/tables/${selectedTableName.value}/rows`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ where, data: { [colName]: newVal === '' ? null : newVal } })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error);
+
+                    row[colName] = newVal === '' ? null : newVal;
+                    cancelInlineEdit();
+                    showAlert(`Updated [${colName}] successfully.`);
+                } catch (e) {
+                    showAlert(e.message, 'error');
+                }
+            };
+
             // Insert / Edit Modals
             const openInsertModal = () => {
                 isEditingRow.value = false;
@@ -1318,7 +1717,7 @@
                 }
             };
 
-            // SQL Console Execution
+            // SQL Console Execution & Saved Queries
             const initCodeMirror = () => {
                 const textarea = document.getElementById('sql-editor');
                 if (textarea && !codeEditorInstance) {
@@ -1337,16 +1736,6 @@
                         sqlQuery.value = codeEditorInstance.getValue();
                     });
                 }
-            };
-
-            const setSqlSnippet = (type) => {
-                const tbl = selectedTableName.value || 'users';
-                if (type === 'select') {
-                    sqlQuery.value = `SELECT * FROM \`${tbl}\` LIMIT 50;`;
-                } else if (type === 'count') {
-                    sqlQuery.value = `SELECT COUNT(*) as total_rows FROM \`${tbl}\`;`;
-                }
-                if (codeEditorInstance) codeEditorInstance.setValue(sqlQuery.value);
             };
 
             const runQuery = async () => {
@@ -1399,6 +1788,145 @@
                 if (codeEditorInstance) codeEditorInstance.setValue('');
                 sqlQuery.value = '';
                 queryResult.value = null;
+            };
+
+            const fetchSavedQueries = async () => {
+                try {
+                    const res = await fetch(`/${config.value.path}/api/saved-queries`);
+                    const data = await res.json();
+                    savedQueries.value = data.saved_queries || [];
+                } catch (e) {}
+            };
+
+            const promptSaveQuery = async () => {
+                const sql = codeEditorInstance ? codeEditorInstance.getValue() : sqlQuery.value;
+                if (!sql.trim()) {
+                    showAlert('Query editor is empty.', 'error');
+                    return;
+                }
+                const title = prompt('Enter a name for this saved query bookmark:');
+                if (!title) return;
+
+                try {
+                    const res = await fetch(`/${config.value.path}/api/saved-queries`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ title, sql })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error);
+                    savedQueries.value = data.saved_queries;
+                    showAlert('Query bookmarked successfully!');
+                } catch (e) {
+                    showAlert(e.message, 'error');
+                }
+            };
+
+            const loadSavedQuery = (sq) => {
+                sqlQuery.value = sq.sql;
+                if (codeEditorInstance) codeEditorInstance.setValue(sq.sql);
+                showSavedQueriesModal.value = false;
+                showAlert(`Loaded query: ${sq.title}`);
+            };
+
+            const deleteSavedQuery = async (id) => {
+                try {
+                    const res = await fetch(`/${config.value.path}/api/saved-queries/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+                    });
+                    const data = await res.json();
+                    savedQueries.value = data.saved_queries;
+                    showAlert('Bookmark removed.');
+                } catch (e) {
+                    showAlert(e.message, 'error');
+                }
+            };
+
+            // Laravel Code Generator
+            const openCodeGeneratorModal = async () => {
+                showCodeGeneratorModal.value = true;
+                generatedCodes.value = {};
+                try {
+                    const res = await fetch(`/${config.value.path}/api/tables/${selectedTableName.value}/generate?type=all`);
+                    const data = await res.json();
+                    generatedCodes.value = data.code || {};
+                } catch (e) {
+                    showAlert(e.message, 'error');
+                }
+            };
+
+            // Mock Data Generator
+            const submitMockData = async () => {
+                generatingMock.value = true;
+                try {
+                    const res = await fetch(`/${config.value.path}/api/tables/${selectedTableName.value}/mock-data`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ count: mockCount.value })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error);
+
+                    showMockDataModal.value = false;
+                    showAlert(data.message);
+                    await fetchTableRows(1);
+                } catch (e) {
+                    showAlert(e.message, 'error');
+                } finally {
+                    generatingMock.value = false;
+                }
+            };
+
+            // Global Search
+            const runGlobalSearch = async () => {
+                if (!globalSearchKeyword.value.trim()) return;
+                searchingGlobal.value = true;
+                try {
+                    const res = await fetch(`/${config.value.path}/api/search`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ keyword: globalSearchKeyword.value })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error);
+                    globalSearchResults.value = data;
+                } catch (e) {
+                    showAlert(e.message, 'error');
+                } finally {
+                    searchingGlobal.value = false;
+                }
+            };
+
+            // Schema Diff
+            const runSchemaDiff = async () => {
+                runningDiff.value = true;
+                try {
+                    const res = await fetch(`/${config.value.path}/api/diff`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ source: diffSource.value, target: diffTarget.value })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error);
+                    diffResults.value = data;
+                } catch (e) {
+                    showAlert(e.message, 'error');
+                } finally {
+                    runningDiff.value = false;
+                }
             };
 
             const submitImportSql = async () => {
@@ -1458,6 +1986,7 @@
                 if (selectedTableName.value) {
                     selectTable(selectedTableName.value);
                 }
+                fetchSavedQueries();
                 nextTick(() => {
                     initCodeMirror();
                 });
@@ -1487,11 +2016,27 @@
                 dataSearch,
                 selectedRowKeys,
                 isAllSelected,
+                inlineEditing,
                 tableIndexes,
                 tableForeignKeys,
                 tableCreateSql,
                 sqlQuery,
                 queryResult,
+                savedQueries,
+                showSavedQueriesModal,
+                showCodeGeneratorModal,
+                activeGenTab,
+                generatedCodes,
+                showMockDataModal,
+                mockCount,
+                generatingMock,
+                globalSearchKeyword,
+                globalSearchResults,
+                searchingGlobal,
+                diffSource,
+                diffTarget,
+                diffResults,
+                runningDiff,
                 isLoading,
                 alertMessage,
                 alertType,
@@ -1522,6 +2067,9 @@
                 fetchTableRows,
                 sortBy,
                 toggleSelectAllRows,
+                startInlineEdit,
+                cancelInlineEdit,
+                saveInlineEdit,
                 openInsertModal,
                 openEditModal,
                 saveRowData,
@@ -1535,10 +2083,16 @@
                 submitCreateTable,
                 submitAddColumn,
                 dropColumn,
-                setSqlSnippet,
                 runQuery,
                 explainQuery,
                 clearSql,
+                promptSaveQuery,
+                loadSavedQuery,
+                deleteSavedQuery,
+                openCodeGeneratorModal,
+                submitMockData,
+                runGlobalSearch,
+                runSchemaDiff,
                 submitImportSql,
                 copyToClipboard,
                 refreshAll,
