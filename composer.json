@@ -37,6 +37,17 @@
             "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
+    "scripts": {
+        "test": "./vendor/bin/phpunit",
+        "setup": [
+            "@php ./vendor/bin/testbench workbench:create-sqlite-db",
+            "@php ./vendor/bin/testbench migrate --seed"
+        ],
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php ./vendor/bin/testbench serve --port=8080"
+        ]
+    },
     "extra": {
         "laravel": {
             "providers": [
@@ -45,6 +56,9 @@
             "aliases": {
                 "LaraMyAdmin": "LaraMyAdmin\\Facades\\LaraMyAdmin"
             }
+        },
+        "workbench": {
+            "start": "/laramyadmin"
         }
     },
     "minimum-stability": "dev",
