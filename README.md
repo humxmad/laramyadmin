@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./art/screenshot.jpg" alt="LaraMyAdmin Studio Pro Screenshot" width="100%" style="border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+</p>
+
 # LaraMyAdmin ⚡ (Laravel Multi-Database Studio Pro)
 
 A modern, powerful, and developer-friendly database management package for **Laravel** (a state-of-the-art alternative to phpMyAdmin, TablePlus, and Adminer).
@@ -54,7 +58,7 @@ Manage all your connected databases (MySQL, PostgreSQL, SQLite, SQL Server), dyn
 Install LaraMyAdmin via Composer:
 
 ```bash
-composer require laramyadmin/laramyadmin
+composer require humxmad/laramyadmin
 ```
 
 Publish configuration (optional):
@@ -75,7 +79,7 @@ http://your-app.test/laramyadmin
 ```php
 use LaraMyAdmin\LaraMyAdmin;
 
-public function boot()
+public function boot(): void
 {
     LaraMyAdmin::auth(function ($request) {
         return $request->user() && $request->user()->is_admin;
@@ -90,3 +94,9 @@ public function boot()
 ```bash
 composer test
 ```
+
+---
+
+## 📄 License
+
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
