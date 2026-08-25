@@ -1,5 +1,5 @@
 {
-    "name": "laramyadmin/laramyadmin",
+    "name": "humxmad/laramyadmin",
     "description": "A modern, beautiful, multi-database management package for Laravel (phpMyAdmin / TablePlus alternative).",
     "keywords": ["laravel", "database", "phpmyadmin", "adminer", "tableplus", "mysql", "postgres", "sqlite", "sql"],
     "type": "library",
